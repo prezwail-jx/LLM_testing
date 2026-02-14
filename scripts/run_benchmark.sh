@@ -13,6 +13,10 @@ fi
 source "$CONFIG_FILE"
 export TOKENIZERS_PARALLELISM="${TOKENIZERS_PARALLELISM:-false}"
 
+# Print runtime Python info to avoid conda/venv confusion.
+echo "[env] python=$(command -v python)"
+python -V || true
+
 MODEL_ID="${MODEL_ID:-deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B}"
 BACKEND="${BACKEND:-auto}"
 ENABLE_FALLBACK="${ENABLE_FALLBACK:-1}"
