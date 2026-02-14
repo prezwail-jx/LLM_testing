@@ -15,7 +15,7 @@ It starts a local OpenAI-compatible model server, runs prompt tests, and writes 
 1. If you use Conda, exit `base` first (important):
 
 ```bash
-conda deactivate  (outside of venv)
+conda deactivate  #outside of venv
 ```
 
 2. Create and activate a virtual environment:
@@ -101,7 +101,7 @@ bash scripts/download_model.sh
 - Fix:
 
 ```bash
-(outside of venv)
+#outside of venv
 conda deactivate
 rm -rf .venv
 python3 -m venv .venv
