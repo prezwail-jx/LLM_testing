@@ -1,0 +1,6 @@
+openai>=1.40.0
+transformers>=4.45.0
+torch>=2.2.0
+fastapi>=0.111.0
+uvicorn>=0.30.0
+huggingface_hub>=0.24.0
