@@ -2,15 +2,78 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CONFIG_FILE="${1:-$ROOT_DIR/benchmarks/config.env}"
+CONFIG_FILE="$ROOT_DIR/benchmarks/config.env"
+CLI_MODEL_ID=""
+CLI_PROMPTS_FILE=""
 
-if [[ ! -f "$CONFIG_FILE" ]]; then
-  echo "[error] config not found: $CONFIG_FILE"
-  exit 1
+usage() {
+  cat <<'EOF'
+Usage:
+  bash scripts/run_benchmark.sh
+  bash scripts/run_benchmark.sh --model-id <model> --prompts-file <file>
+  bash scripts/run_benchmark.sh --config benchmarks/config.env --model-id <model> --prompts-file <file>
+
+Options:
+  --config <path>         Optional config file path (default: benchmarks/config.env)
+  --model-id <id>         Override MODEL_ID from config
+  --prompts-file <path>   Override PROMPTS_FILE from config
+  -h, --help              Show this help
+EOF
+}
+
+POSITIONAL_CONFIG_SET=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --config)
+      if [[ $# -lt 2 ]]; then
+        echo "[error] --config requires a value"
+        usage
+        exit 1
+      fi
+      CONFIG_FILE="$2"
+      shift 2
+      ;;
+    --model-id)
+      if [[ $# -lt 2 ]]; then
+        echo "[error] --model-id requires a value"
+        usage
+        exit 1
+      fi
+      CLI_MODEL_ID="$2"
+      shift 2
+      ;;
+    --prompts-file)
+      if [[ $# -lt 2 ]]; then
+        echo "[error] --prompts-file requires a value"
+        usage
+        exit 1
+      fi
+      CLI_PROMPTS_FILE="$2"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      if [[ "$POSITIONAL_CONFIG_SET" -eq 0 ]] && [[ "$1" != -* ]]; then
+        CONFIG_FILE="$1"
+        POSITIONAL_CONFIG_SET=1
+        shift
+      else
+        echo "[error] unknown argument: $1"
+        usage
+        exit 1
+      fi
+      ;;
+  esac
+done
+
+# Config file is optional: load when present.
+if [[ -f "$CONFIG_FILE" ]]; then
+  # shellcheck disable=SC1090
+  source "$CONFIG_FILE"
 fi
-
-# shellcheck disable=SC1090
-source "$CONFIG_FILE"
 export TOKENIZERS_PARALLELISM="${TOKENIZERS_PARALLELISM:-false}"
 
 # Print runtime Python info to avoid conda/venv confusion.
@@ -28,12 +91,34 @@ TIMEOUT_S="${TIMEOUT_S:-120}"
 WARMUP_REQUESTS="${WARMUP_REQUESTS:-1}"
 MIN_SUCCESS_RATE="${MIN_SUCCESS_RATE:-0.90}"
 OUTPUT_DIR="${OUTPUT_DIR:-outputs}"
-PROMPTS_FILE="${PROMPTS_FILE:-benchmarks/prompts.txt}"
+PROMPTS_FILE="${PROMPTS_FILE:-benchmarks/prompts_default.txt}"
 PRELOAD_MODEL="${PRELOAD_MODEL:-0}"
+
+if [[ -n "$CLI_MODEL_ID" ]]; then
+  MODEL_ID="$CLI_MODEL_ID"
+fi
+
+if [[ -n "$CLI_PROMPTS_FILE" ]]; then
+  PROMPTS_FILE="$CLI_PROMPTS_FILE"
+fi
+
+if [[ "$PROMPTS_FILE" = /* ]]; then
+  PROMPTS_PATH="$PROMPTS_FILE"
+else
+  PROMPTS_PATH="$ROOT_DIR/$PROMPTS_FILE"
+fi
+
+if [[ ! -f "$PROMPTS_PATH" ]]; then
+  echo "[error] prompts file not found: $PROMPTS_PATH"
+  exit 1
+fi
 
 RUN_TS="$(date +%Y%m%d_%H%M%S)"
 RUN_DIR="$ROOT_DIR/$OUTPUT_DIR/$RUN_TS"
 mkdir -p "$RUN_DIR"
+
+echo "[config] model=$MODEL_ID"
+echo "[config] prompts=$PROMPTS_PATH"
 
 SERVER_PID=""
 ACTUAL_BACKEND=""
@@ -145,7 +230,7 @@ start_server() {
 }
 
 if [[ "$PRELOAD_MODEL" == "1" ]]; then
-  "$ROOT_DIR/scripts/download_model.sh" "$CONFIG_FILE"
+  "$ROOT_DIR/scripts/download_model.sh" --config "$CONFIG_FILE" --model-id "$MODEL_ID"
 fi
 
 ACTUAL_BACKEND="$(detect_backend)"
@@ -166,7 +251,7 @@ python "$ROOT_DIR/benchmarks/evaluate.py" \
   --backend "$ACTUAL_BACKEND" \
   --host "$HOST" \
   --port "$PORT" \
-  --prompts-file "$ROOT_DIR/$PROMPTS_FILE" \
+  --prompts-file "$PROMPTS_PATH" \
   --output-dir "$RUN_DIR" \
   --max-new-tokens "$MAX_NEW_TOKENS" \
   --temperature "$TEMPERATURE" \

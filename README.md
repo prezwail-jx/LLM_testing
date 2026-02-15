@@ -42,18 +42,75 @@ python -m pip install -U pip setuptools wheel
 python -m pip install -r requirements.txt
 ```
 
-## 3. Configure Benchmark
+## 3. Configure Benchmark (Optional)
 
-Edit `benchmarks/config.env`:
+Edit `benchmarks/config.env` only if you want persistent defaults:
 
 ```bash
 vim benchmarks/config.env
 ```
 
+Prompt set options:
+
+- `benchmarks/prompts_dev.txt`: short and simple prompts for fast script debugging.
+- `benchmarks/prompts_eval.txt`: larger and more diverse prompts for full evaluation.
+- `benchmarks/prompts_default.txt`: default prompt file (balanced set).
+
+Switch by setting `PROMPTS_FILE` in `benchmarks/config.env`, for example:
+
+```env
+PROMPTS_FILE=benchmarks/prompts_dev.txt
+```
+
+### Config Reference
+
+`benchmarks/config.env` supports the following keys:
+
+- `MODEL_ID`: Hugging Face model id to load.
+  - Default: `deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B`
+  - Example: `Qwen/Qwen2.5-0.5B-Instruct`
+- `BACKEND`: Inference backend selection.
+  - Values: `auto`, `transformers`, `vllm`
+  - Default: `transformers`
+- `ENABLE_FALLBACK`: Whether to fallback from vLLM to transformers when vLLM fails to start.
+  - Values: `1` (enabled), `0` (disabled)
+  - Default: `1`
+- `HOST`: Server bind host.
+  - Default: `127.0.0.1`
+- `PORT`: Server bind port.
+  - Default: `8000`
+- `MAX_NEW_TOKENS`: Max generated tokens per request.
+  - Default: `128`
+- `TEMPERATURE`: Sampling temperature.
+  - Default: `0.0`
+- `TIMEOUT_S`: Startup health-check timeout and request timeout in seconds.
+  - Default: `900` in script fallback (can be set higher in config)
+- `WARMUP_REQUESTS`: Number of warmup requests before measured run.
+  - Default: `1`
+- `MIN_SUCCESS_RATE`: Minimum success ratio required by evaluator.
+  - Default: `0.90`
+- `OUTPUT_DIR`: Output root directory for benchmark artifacts.
+  - Default: `outputs`
+- `PROMPTS_FILE`: Prompt file path (relative to repo root or absolute path).
+  - Default: `benchmarks/prompts_default.txt`
+- `PRELOAD_MODEL`: Whether to pre-download model before server startup.
+  - Values: `1` (download first), `0` (download on demand)
+  - Default: `0`
+- `MODEL_DIR`: Target directory used by `scripts/download_model.sh` for local model download.
+  - Default: `model`
+
 ## 4. Run
 
 ```bash
 bash scripts/run_benchmark.sh
+```
+
+Override model and prompt set from command line:
+
+```bash
+bash scripts/run_benchmark.sh \
+  --model-id Qwen/Qwen2.5-1.5B-Instruct \
+  --prompts-file benchmarks/prompts_dev.txt
 ```
 
 The script prints runtime Python at startup:
@@ -91,6 +148,12 @@ Summary columns in `report.txt`:
 
 ```bash
 bash scripts/download_model.sh
+```
+
+Download a specific model from command line
+
+```bash
+bash scripts/download_model.sh --model-id <model_id>
 ```
 
 ## 7. Troubleshooting

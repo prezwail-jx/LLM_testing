@@ -1,0 +1,48 @@
+Explain gradient descent in three sentences and include a real-life analogy.
+Write a Python function that sorts a list of strings by length in descending order and state the time complexity.
+Rewrite this message in a formal business tone: "We probably cannot finish this week; we will deliver next week."
+Write a shell script (<= 8 lines) to count file extensions in the current directory.
+Explain the TCP three-way handshake and why two handshakes are not enough.
+Summarize key differences between REST and GraphQL in 5 bullet points.
+Provide a minimal runnable FastAPI example with a `/health` route.
+Explain TTFT, TPOT, and tokens-per-second, and describe how they relate.
+Design a concise report template for model benchmark results.
+Give three practical tips to run small LLMs more stably on a laptop.
+
+Compare Python list comprehensions and for-loops in readability and performance.
+Write a JavaScript function that removes duplicates while preserving order.
+Explain average time complexity of hash tables and when worst-case happens.
+In about 80 words, explain what Docker is and what problem it solves.
+Break this requirement into 5 executable tasks: user registration, login, password reset.
+Provide a regex for basic email validation and explain edge cases.
+How do you undo the latest Git commit but keep code changes? Provide the command.
+Write SQL to get daily order counts for the last 7 days from an `orders` table.
+Explain cache breakdown, cache penetration, and cache avalanche with mitigations.
+Summarize this into 3 key points: "Next quarter we will push benchmark automation with focus on latency, stability, and cost."
+
+Design a small benchmark experiment to compare two local LLMs on latency and output quality.
+Provide a concise checklist for releasing a Python CLI tool to production.
+Give a Linux command pipeline to find files larger than 100MB and sort by size.
+Explain idempotency and provide one HTTP API design example.
+Write a Python function to merge two sorted arrays and return a sorted result.
+Compare WebSocket and HTTP polling in a short table.
+Provide a minimal CI template with lint, test, and build steps.
+Explain typical gains and risks of increasing batch size in model inference.
+Convert this into pseudocode: read file, filter empty lines, deduplicate, write to new file.
+Write a beginner-friendly explanation of why virtual environments are needed.
+
+Create 5 benchmark prompts for evaluating code explanation quality.
+If local model outputs are frequently interrupted, provide a step-by-step debug plan.
+Explain the role of warmup requests in performance tests and when they can be skipped.
+Write a function that counts word frequencies and returns the top 10 words.
+Provide a minimal Nginx reverse proxy config that routes `/api` to `127.0.0.1:8000`.
+Design a JSON schema for recording single inference metrics.
+How do you distinguish "slow model" from "slow network"? Give actionable diagnostics.
+List three methods to reduce local inference memory usage and their trade-offs.
+Give short advice for writing a clear quick-start section in technical docs.
+Provide a 6-step flow from cloning a repo to completing one benchmark run.
+
+Given a Python function, produce a line-by-line explanation suitable for junior engineers.
+Write a bug report template for failed benchmark runs with required fields.
+Suggest a strategy to version benchmark prompts and keep results comparable over time.
+Propose acceptance criteria for benchmark stability in CI.

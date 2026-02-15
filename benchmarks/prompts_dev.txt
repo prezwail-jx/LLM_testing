@@ -1,0 +1,10 @@
+Explain what an API is in one sentence.
+Sort the list [5, 1, 3] in ascending order and show the result.
+Write a Python function `is_even(n)` that returns whether `n` is even.
+Translate this sentence into English: "The weather is great today."
+Write a SQL query to count total rows in a `users` table.
+Explain the difference between HTTP status codes 200 and 404.
+Write a Bash command to count files in the current directory.
+List three benefits of unit testing.
+Output a minimal JSON example with `name` and `age` fields.
+Show a FastAPI `/health` route example in at most 10 lines.

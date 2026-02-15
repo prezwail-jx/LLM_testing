@@ -1,0 +1,10 @@
+Explain gradient descent in three sentences and include a real-life analogy.
+Write a Python function that sorts a list of strings by length in descending order and state the time complexity.
+Rewrite this message in a formal business tone: "We probably cannot finish this week; we will deliver next week."
+Write a shell script (<= 8 lines) to count file extensions in the current directory.
+Explain the TCP three-way handshake and why two handshakes are not enough.
+Summarize key differences between REST and GraphQL in 5 bullet points.
+Provide a minimal runnable FastAPI example with a `/health` route.
+Explain TTFT, TPOT, and tokens-per-second, and describe how they relate.
+Design a concise report template for model benchmark results.
+Give three practical tips to run small LLMs more stably on a laptop.
